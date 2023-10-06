@@ -38,19 +38,30 @@ client.on('interactionCreate', async (interaction) => {
             .setCustomId('dino-button')
         
         const buttonRow = new ActionRowBuilder().addComponents(dino_button, med_button)
-        const reply = await interaction.reply({embeds: [guess()], components: [buttonRow], ephemeral: true})
+        const guess_comp = guess()
+        const reply = await interaction.reply({embeds: [guess_comp[0]], components: [buttonRow], ephemeral: true})
 
         const collector = reply.createMessageComponentCollector({
             componentType: ComponentType.Button,
         })
 
+        const correct = guess_comp[1]
         collector.on('collect', (interaction) => {
+            let choice
             if (interaction.customId === 'dino-button') {
-                interaction.reply('dino')
+                choice = 0
             } else {
-                interaction.reply('med')
+                choice = 1
             }
+
+            if (choice === correct) {
+                interaction.reply({content: "Right!", ephemeral: true})
+            } else {
+                interaction.reply({content: "incorrect ..", ephemeral: true})
+            }
+            reply.delete()
         })
+
     }
     
     if (interaction.commandName === 'stats') {

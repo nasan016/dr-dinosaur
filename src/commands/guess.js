@@ -21,5 +21,6 @@ export const guess = () => {
         .setTitle('Is this a Dinosaur or a Medical Term?')
         .setDescription(str)
         .setColor('Random')
-    return embed
+
+    return [embed, random_int]
 }
