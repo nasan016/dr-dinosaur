@@ -1,17 +1,20 @@
 import { EmbedBuilder } from "discord.js"
+import { meds, dinos } from "./read-lines.js"
 
-const getRandomInt = () => {
-    return Math.floor(Math.random() * 2)
+const getRandomInt = (max) => {
+    return Math.floor(Math.random() * max)
 }
 
 export const dino_med = () => {
-    const random_int = getRandomInt()
+    const random_int = getRandomInt(2)
     let str
 
     if (random_int === 0) {
-        str = "dinosaur"
+        const r = getRandomInt(dinos.length)
+        str = dinos[r]
     } else {
-        str = "medical"
+        const r = getRandomInt(meds.length)
+        str = meds[r]
     }
 
     const embed = new EmbedBuilder()
