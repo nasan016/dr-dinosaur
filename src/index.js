@@ -1,4 +1,4 @@
-import { Client, IntentsBitField, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } from 'discord.js'
+import { Client, IntentsBitField, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, EmbedBuilder } from 'discord.js'
 import { guess } from './commands/guess.js'
 import { stats } from './commands/stats.js'
 import { config } from 'dotenv'
@@ -48,16 +48,32 @@ client.on('interactionCreate', async (interaction) => {
         const correct = guess_comp[1]
         collector.on('collect', (interaction) => {
             let choice
+            let incorrect_msg
+            let correct_msg
             if (interaction.customId === 'dino-button') {
                 choice = 0
+                incorrect_msg = "medical term"
+                correct_msg = "dinosaur"
             } else {
                 choice = 1
+                incorrect_msg = "dinosaur"
+                correct_msg = "medical term"
             }
 
+            const correct_embed = new EmbedBuilder()
+                .setTitle(`Correct!`)
+                .setDescription(`It is a ${correct_msg}!`)
+                .setColor(0x00eb00)
+            
+            const incorrect_embed = new EmbedBuilder()
+                .setTitle(`Incorrect.`)
+                .setDescription(`It is a ${incorrect_msg}...`)
+                .setColor(0xff0000)
+
             if (choice === correct) {
-                interaction.reply({content: "Right!", ephemeral: true})
+                interaction.reply({embeds: [correct_embed], ephemeral: true})
             } else {
-                interaction.reply({content: "incorrect ..", ephemeral: true})
+                interaction.reply({embeds: [incorrect_embed], ephemeral: true})
             }
             reply.delete()
         })
