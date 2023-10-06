@@ -5,7 +5,7 @@ const getRandomInt = (max) => {
     return Math.floor(Math.random() * max)
 }
 
-export const dino_med = () => {
+export const guess = () => {
     const random_int = getRandomInt(2)
     let str
 
