@@ -1,4 +1,4 @@
-import { Client, IntentsBitField, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js'
+import { Client, IntentsBitField, ActivityType, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } from 'discord.js'
 import { guess } from './commands/guess.js'
 import { stats } from './commands/stats.js'
 import { config } from 'dotenv'
@@ -23,7 +23,7 @@ client.on('ready', (c) => {
     })
 })
 
-client.on('interactionCreate', (interaction) => {
+client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return
 
     if (interaction.commandName === 'guess') {
@@ -38,7 +38,19 @@ client.on('interactionCreate', (interaction) => {
             .setCustomId('dino-button')
         
         const buttonRow = new ActionRowBuilder().addComponents(dino_button, med_button)
-        interaction.reply({embeds: [guess()], components: [buttonRow], ephemeral: true})
+        const reply = await interaction.reply({embeds: [guess()], components: [buttonRow], ephemeral: true})
+
+        const collector = reply.createMessageComponentCollector({
+            componentType: ComponentType.Button,
+        })
+
+        collector.on('collect', (interaction) => {
+            if (interaction.customId === 'dino-button') {
+                interaction.reply('dino')
+            } else {
+                interaction.reply('med')
+            }
+        })
     }
     
     if (interaction.commandName === 'stats') {
