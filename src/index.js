@@ -1,5 +1,6 @@
 import { Client, IntentsBitField, ActivityType} from 'discord.js'
 import { dino_med } from './commands/guess.js'
+import { stats } from './commands/stats.js'
 import { config } from 'dotenv'
 config()
 
@@ -27,6 +28,15 @@ client.on('interactionCreate', (interaction) => {
 
     if (interaction.commandName === 'guess') {
         interaction.reply({embeds: [dino_med()], ephemeral: true})
+    }
+    
+    if (interaction.commandName === 'stats') {
+        interaction.reply({embeds: [
+            stats(interaction.user.globalName, 
+                interaction.user.displayAvatarURL({dynamic: true}), 
+                12, 
+                12
+            )]})
     }
 })
 
