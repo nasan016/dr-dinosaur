@@ -161,11 +161,8 @@ async function invoke(interaction){
         }
         try {
             const USER = await User.findOne(query)
-            if (correct === 0) {
-                USER.dinoQuestion += 1
-            } else {
-                USER.medQuestion += 1
-            }
+            if (correct === 0) { USER.dinoQuestion += 1 } 
+            else { USER.medQuestion += 1 }
             await USER.save()
         } catch (e) {
             console.log(`Error logging question: ${e} 2`)
