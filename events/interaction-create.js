@@ -1,5 +1,5 @@
 const once = false;
-const name = 'interaction-create'
+const name = 'interactionCreate'
 
 async function invoke(interaction) {
     if (interaction.isChatInputCommand()) {
