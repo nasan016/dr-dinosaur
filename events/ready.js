@@ -1,9 +1,15 @@
 import * as fs from 'fs'
+import { ActivityType } from 'discord.js'
 
 const once = true;
 const name = 'ready'
 
 async function invoke(client) {
+    client.user.setActivity({
+        name: 'a big asteroid. ☄️',
+        type: ActivityType.Watching,
+    })
+
     const commands = fs
         .readdirSync('./events/commands')
         .filter((file) => file.endsWith('.js'))
