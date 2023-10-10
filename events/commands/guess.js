@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } from 'discord.js';
+import { User } from '../../models/User.js';
 import * as fs from 'fs'
 
 const dino_file = fs.readFileSync('./events/commands/txt/dinosaur.txt', 'utf-8')
@@ -47,12 +48,12 @@ async function invoke(interaction){
     const term = pick_term()
     let correct
 
-    if (term in dinos) {
+    if (dinos.includes(term)) {
         correct = 0
     } else {
         correct = 1
     }
-
+    console.log(correct, dinos, meds)
     const embed = new EmbedBuilder()
         .setTitle('Is this a Dinosaur or a Medical Term?')
         .setDescription(term) //fill this with the get thing function
@@ -80,7 +81,8 @@ async function invoke(interaction){
         componentType: ComponentType.Button
     })
 
-    collector.on('collect', (interaction) => {
+    collector.on('collect', async (interaction) => {
+        console.log(correct)
         let choice
         let incorrect_msg
         let correct_msg
@@ -105,18 +107,71 @@ async function invoke(interaction){
             .setDescription(`It is a ${incorrect_msg}`)
             .setColor(0xff0000)
         
+        const query = {
+         userId: interaction.user.id   
+        }
+
         if (choice === correct) {
             interaction.reply({
                 embeds: [correct_embed],
                 ephemeral: true
             })
+
+            try {
+                const USER = await User.findOne(query)
+                if(USER) { //correct: 0 => dinos | correct: 1 => meds
+                    if (correct === 0) { USER.correctDino += 1 } 
+                    else { USER.correctMed += 1 }
+                     await USER.save()
+                } else {
+                    const newUSER = new User({
+                        userId: interaction.user.id,
+                        dinoQuestion: 0,
+                        medQuestion: 0,
+                        correctDino: 0,
+                        correctMed: 0,
+                    })
+                    if (correct === 0) { newUSER.correctDino += 1}
+                    else { newUSER.correctMed += 1 }
+                    await newUSER.save()
+                }
+            } catch (e) {
+                console.log(`Error logging question: ${e}`)
+            }
         } else {
             interaction.reply({
                 embeds: [incorrect_embed],
                 ephemeral: true
             })
+            try {
+                const USER = await User.findOne(query)
+                if(!USER) {
+                    const newUSER = new User({
+                        userId: interaction.user.id,
+                        dinoQuestion: 0,
+                        medQuestion: 0,
+                        correctDino: 0,
+                        correctMed: 0,
+                    })
+                    await newUSER.save()
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        try {
+            const USER = await User.findOne(query)
+            if (correct === 0) {
+                USER.dinoQuestion += 1
+            } else {
+                USER.medQuestion += 1
+            }
+            await USER.save()
+        } catch (e) {
+            console.log(`Error logging question: ${e} 2`)
         }
         reply.delete()
     })
 }
+
 export { create, invoke }
