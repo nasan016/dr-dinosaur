@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } from 'discord.js';
 import { User } from '../../models/User.js';
+import { Word } from '../../models/Words.js';
 import * as fs from 'fs'
 
 const dino_file = fs.readFileSync('./events/commands/txt/dinosaur.txt', 'utf-8')
@@ -86,7 +87,16 @@ async function invoke(interaction){
         let choice
         let incorrect_msg
         let correct_msg
+        let total, correct_clicks
 
+        const query = {
+            userId: interaction.user.id   
+           }
+   
+        const word_query = {
+            wordId: term
+        }
+   
         if (interaction.customId === 'dino-button') {
             choice = 0
             incorrect_msg = "medical term"
@@ -96,21 +106,51 @@ async function invoke(interaction){
             incorrect_msg = "dinosaur"
             correct_msg = "medical term"
         }
-
-        const correct_embed = new EmbedBuilder()
-            .setTitle("Correct!")
-            .setDescription(`It is a ${correct_msg}!`)
-            .setColor(0x00eb00)
         
-        const incorrect_embed = new EmbedBuilder()
-            .setTitle("Incorrect.")
-            .setDescription(`It is a ${incorrect_msg}`)
-            .setColor(0xff0000)
-        
-        const query = {
-         userId: interaction.user.id   
+        try {
+            const WORD = await Word.findOne(word_query)
+            if (WORD) {
+                if (correct === choice) {
+                    WORD.correctGuess += 1
+                }
+                WORD.totalGuess += 1
+                total = WORD.totalGuess
+                correct_clicks = WORD.correctGuess
+                await WORD.save()
+            } else {
+                const newWORD = new Word({
+                    wordId: term,
+                })
+                if (correct === choice) {
+                    newWORD.correctGuess += 1
+                }
+                newWORD.totalGuess += 1
+                total = newWORD.totalGuess
+                correct_clicks = newWORD.correctGuess
+                await newWORD.save()
+            }
+        } catch (e) {
+            console.log(`couldnt log word: ${e}`)
         }
 
+        const correct_embed = new EmbedBuilder()
+        .setTitle("Correct!")
+        .setDescription(`It is a *${correct_msg}!*`)
+        .addFields({
+            name: " ", 
+            value: `**${total === 0 ? 0 : Math.floor(correct_clicks / total)}%** of students got this right.`
+        })
+        .setColor(0x00eb00)
+    
+        const incorrect_embed = new EmbedBuilder()
+            .setTitle("Incorrect.")
+            .setDescription(`It is a *${incorrect_msg}*`)
+            .addFields({
+                name: " ", 
+                value: `**${total === 0 ? 0 : Math.floor(correct_clicks / total)}%** of students got this right.`
+            })
+            .setColor(0xff0000)
+            
         if (choice === correct) {
             interaction.reply({
                 embeds: [correct_embed],
@@ -148,10 +188,6 @@ async function invoke(interaction){
                 if(!USER) {
                     const newUSER = new User({
                         userId: interaction.user.id,
-                        dinoQuestion: 0,
-                        medQuestion: 0,
-                        correctDino: 0,
-                        correctMed: 0,
                     })
                     await newUSER.save()
                 }
@@ -159,6 +195,7 @@ async function invoke(interaction){
                 console.log(e)
             }
         }
+
         try {
             const USER = await User.findOne(query)
             if (correct === 0) { USER.dinoQuestion += 1 } 
@@ -167,6 +204,7 @@ async function invoke(interaction){
         } catch (e) {
             console.log(`Error logging question: ${e} 2`)
         }
+
         reply.delete()
     })
 }
