@@ -54,7 +54,6 @@ async function invoke(interaction){
     } else {
         correct = 1
     }
-    console.log(correct, dinos, meds)
     const embed = new EmbedBuilder()
         .setTitle('Is this a Dinosaur or a Medical Term?')
         .setDescription(term) //fill this with the get thing function
@@ -83,7 +82,6 @@ async function invoke(interaction){
     })
 
     collector.on('collect', async (interaction) => {
-        console.log(correct)
         let choice
         let incorrect_msg
         let correct_msg
@@ -138,7 +136,7 @@ async function invoke(interaction){
         .setDescription(`It is a *${correct_msg}!*`)
         .addFields({
             name: " ", 
-            value: `**${total === 0 ? 0 : Math.floor(correct_clicks / total)}%** of students got this right.`
+            value: `**${total === 0 ? 0 : Math.floor((correct_clicks / total) * 100)}%** of students got this right.`
         })
         .setColor(0x00eb00)
     
@@ -147,7 +145,7 @@ async function invoke(interaction){
             .setDescription(`It is a *${incorrect_msg}*`)
             .addFields({
                 name: " ", 
-                value: `**${total === 0 ? 0 : Math.floor(correct_clicks / total)}%** of students got this right.`
+                value: `**${total === 0 ? 0 : Math.floor((correct_clicks / total) * 100)}%** of students got this right.`
             })
             .setColor(0xff0000)
             
