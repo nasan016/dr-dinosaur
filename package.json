@@ -10,5 +10,9 @@
   "type": "module",
   "devDependencies": {
     "nodemon": "^3.0.1"
-  }
+  },
+  "imports": {
+		"#events/*": "./events/*",
+		"#commands/*": "./events/commands/*.js"
+	}
 }
