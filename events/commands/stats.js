@@ -50,6 +50,10 @@ const invoke = async (interaction) => {
 			name: "Dinosaur 101 🦖",
 			value: `${dino_percent === 0 ? 0 : Math.floor((dino_percent / dino_total) * 100)}%`
 		})
+		.addFields({
+			name: "Correct Answers / Total Questions 📝",
+			value: `${dino_percent + med_percent} / ${dino_total + med_total}`
+		})
 		.setColor('Random')
 
 	interaction.reply({embeds: [embed]})
