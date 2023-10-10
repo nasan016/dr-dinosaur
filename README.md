@@ -10,7 +10,7 @@ Dr. Dinosaur is here to teach you the difference between dinosaurs and medical t
 * View your report card!
 * See how well you're doing in *Intro to Medicine* and *Dinosaur 101*.
 
-# Ready to enroll?
+# Enroll Today!
 Invite Dr. Dinosaur to your classroom today!
 
 [Ready to learn?](https://discord.com/api/oauth2/authorize?client_id=1159711069930008576&permissions=2147493888&scope=bot)
