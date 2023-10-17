@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start:dev": "nodemon ./src/index.js"
+    "start:dev": "nodemon ./src/index.js",
+    "start": "node ./index.js"
   },
   "dependencies": {
     "@discordjs/rest": "^2.0.1",
