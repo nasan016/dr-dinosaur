@@ -108,9 +108,8 @@ async function invoke(interaction){
         try {
             const WORD = await Word.findOne(word_query)
             if (WORD) {
-                if (correct === choice) {
-                    WORD.correctGuess += 1
-                }
+                if (correct === choice) {WORD.correctGuess += 1}
+
                 WORD.totalGuess += 1
                 total = WORD.totalGuess
                 correct_clicks = WORD.correctGuess
@@ -119,9 +118,8 @@ async function invoke(interaction){
                 const newWORD = new Word({
                     wordId: term,
                 })
-                if (correct === choice) {
-                    newWORD.correctGuess += 1
-                }
+                if (correct === choice) {newWORD.correctGuess += 1}
+
                 newWORD.totalGuess += 1
                 total = newWORD.totalGuess
                 correct_clicks = newWORD.correctGuess
