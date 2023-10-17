@@ -1,9 +1,16 @@
 import { config } from 'dotenv'
 import * as fs from 'fs'
 import { Client, GatewayIntentBits } from 'discord.js'
+import express from 'express'
 import mongoose from 'mongoose'
 config()
 
+const app = express()
+const port = process.env.PORT ?? 8080
+
+app.listen(port, () => {
+    console.log(`app listening on port ${port}`)
+})
 const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 })
